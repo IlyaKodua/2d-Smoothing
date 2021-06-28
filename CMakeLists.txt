@@ -1,7 +1,16 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --compiler-options -g -G")
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --compiler-options -fPIC \
+-gencode arch=compute_50,code=sm_50 \
+-gencode arch=compute_52,code=sm_52 \
+-gencode arch=compute_60,code=sm_60 \
+-gencode arch=compute_60,code=compute_60 \
+-gencode=arch=compute_61,code=sm_61 \
+-gencode=arch=compute_62,code=sm_62")
 
+if (CMAKE_BUILD_TYPE STREQUAL Debug)
+  set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --compiler-options -g -G")
+endif()
 
 project(Conv2d CUDA)
 
