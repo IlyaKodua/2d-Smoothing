@@ -91,9 +91,9 @@ void Suma(const float *mem1, const float *mem2,
         {
             unsigned int img_id = i + (sizeRow) * j;
             unsigned int mem_id = 1 + i + (sizeRow + 2) * (1 + j);
-            img[img_id] +=  mem1[mem_id - k]
-                            + mem2[mem_id + k]
-                            + conv[1 + n] * img[img_id];
+            img[img_id] = mem1[mem_id - k]
+                          + mem2[mem_id + k]
+                          + conv[1 + n] * img[img_id];
         }
     }
 }
@@ -111,15 +111,15 @@ void CalculatingSmoothParts1(float *mem1, float *mem2,
         {
             unsigned int img_id = i + (sizeRow) * j;
             unsigned int mem_id = 1 + i + (sizeRow + 2) * (1 + j);
-            mem1[mem_id - k] += conv[0 + n] * img[img_id];
-            mem2[mem_id + k] += conv[2 + n] * img[img_id];
+            mem1[mem_id - k] = conv[0 + n] * img[img_id];
+            mem2[mem_id + k] = conv[2 + n] * img[img_id];
         }
     }
 }
 
 void cudaCheck(cudaError_t err)
 {
-    assert(err == cudaSuccess);
+//    assert(err == cudaSuccess);
 }
 class Conv2d
 {
@@ -135,7 +135,7 @@ public:
         sizeCol(_sizeCol)
     {
 
-        cudaCheck(AllocAllMem(conv_h));
+//        cudaCheck(AllocAllMem(conv_h));
     }
     ~Conv2d()
     {
@@ -149,13 +149,11 @@ public:
 //        cudaCheck(cudaMalloc((void**)&mem1, sizeMem));
 //        cudaCheck(cudaMalloc((void**)&mem2, sizeMem));
 //        cudaCheck(cudaMalloc((void**)&d_img, sizeImg));
-        float *mem1 = (float*)malloc(sizeMem);
-        float *mem2 = (float*)malloc(sizeMem);
 //        conv = conv_h;
 //        cudaCheck(cudaMemcpy(d_img, img_data, sizeImg, cudaMemcpyHostToDevice));
 //        cudaCheck(cudaMemcpyToSymbol(conv, conv_h, 6* sizeof(float)));
 
-        return cudaGetLastError();
+//        return cudaGetLastError();
     }
     cudaError_t Smooth(const float *conv_h)
     {
@@ -172,9 +170,9 @@ public:
         Suma(mem1, mem2,img_data, sizeRow, sizeCol, 1, 0,conv_h);
          AttachToHostMem(vec);
         cudaCheck(cudaGetLastError());
-        CalculatingSmoothParts1(mem1, mem2, img_data, sizeRow, sizeCol, sizeRow, 3,conv_h);
+        CalculatingSmoothParts1(mem1, mem2, img_data, sizeRow, sizeCol, sizeRow+2, 3,conv_h);
         cudaCheck(cudaGetLastError());
-        Suma(mem1, mem2,img_data, sizeRow, sizeCol, sizeRow, 3,conv_h);
+        Suma(mem1, mem2,img_data, sizeRow, sizeCol, sizeRow+2, 3,conv_h);
         cudaCheck(cudaGetLastError());
         return cudaGetLastError();
     }

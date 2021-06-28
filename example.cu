@@ -24,8 +24,8 @@ img[1] = 1;
 
     float sum = 2*expf(-1) + 1;
 
-    float conv_h[] = {expf(-1)/sum, (float)1.0/sum, expf(-1)/sum,// conv1
-                      expf(-1)/sum, (float)1.0/sum, expf(-1)/sum};// conv2
+    float conv_h[] = {0.5, 1.0, 0.5,// conv1
+                      0.5, 1.0, 0.5};// conv2
 
     Conv2d conv(img, size_row, size_col, conv_h);
     cudaCheck(conv.Smooth(conv_h));
