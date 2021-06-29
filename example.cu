@@ -17,7 +17,8 @@ int main() {
 //    {
 //        img[i + size_row * ((int)size_col/2)] = 1;
 //    }
-img[1] = 1;
+    img[1] = 1;
+    img[2] = 1;
     // e-1                   e-2  e-1  e-2
     //  1    x  e-1 1 e-1 =  e-1   1   e-1
     // e-1                   e-2  e-1  e-2
@@ -28,8 +29,8 @@ img[1] = 1;
                       0.5, 1.0, 0.5};// conv2
 
     Conv2d conv(img, size_row, size_col, conv_h);
-    cudaCheck(conv.Smooth(conv_h));
+    conv.Smooth();
     img_t vec;
-    cudaCheck(conv.AttachToHost(vec));
+    conv.AttachToHost(vec);
     return 0;
 }
