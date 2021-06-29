@@ -1,7 +1,5 @@
 #include "conv2d.cuh"
-#include "conv2d.cuh"
 #include <vector>
-#include <math.h>
 
 int main() {
 
@@ -12,18 +10,13 @@ int main() {
 
     std::vector<float> img((size_row) * (size_col));
 
-
-//    for(int i = 1; i < (int) size_row-1; i++)
-//    {
-//        img[i + size_row * ((int)size_col/2)] = 1;
-//    }
     img[1] = 1;
     img[2] = 1;
-    // e-1                   e-2  e-1  e-2
-    //  1    x  e-1 1 e-1 =  e-1   1   e-1
-    // e-1                   e-2  e-1  e-2
 
-    float sum = 2*expf(-1) + 1;
+    // 0.5                   0.25  0.5  0.25
+    //  1   x 0.5  1 0.5  =  0.5    1   0.5
+    // 0.5                   0.25  0.5  0.25
+
 
     float conv_h[] = {0.5, 1.0, 0.5,// conv1
                       0.5, 1.0, 0.5};// conv2

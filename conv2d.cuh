@@ -78,10 +78,9 @@ public:
     }
     ~Conv2d()
     {
-        cudaFree(conv);
-        cudaFree(d_img);
-        cudaFree(mem1);
-        cudaFree(mem2);
+        cudaCheckDebug(cudaFree(d_img));
+        cudaCheckDebug(cudaFree(mem1));
+        cudaCheckDebug(cudaFree(mem2));
     }
 
     void AllocAllMem(const float *conv_h)
@@ -101,24 +100,22 @@ public:
         dim3 thrd(16,16);
 
         std::vector<float> vec;
-        calc2mem<<<grid, thrd>>>(mem1, mem2, img_data, sizeRow, sizeCol, 1, 0);
+        calc2mem<<<grid, thrd>>>(mem1, mem2, d_img, sizeRow, sizeCol, 1, 0);
         cudaCheckDebug(cudaGetLastError());
 
-        sum<<<grid, thrd>>>(mem1, mem2, img_data, sizeRow, sizeCol, 0);
+        sum<<<grid, thrd>>>(mem1, mem2, d_img, sizeRow, sizeCol, 0);
         cudaCheckDebug(cudaGetLastError());
 
-        calc2mem<<<grid, thrd>>>(mem1, mem2, img_data, sizeRow, sizeCol, sizeRow+2, 3);
+        calc2mem<<<grid, thrd>>>(mem1, mem2, d_img, sizeRow, sizeCol, sizeRow+2, 3);
         cudaCheckDebug(cudaGetLastError());
 
-        sum<<<grid, thrd>>>(mem1, mem2,img_data, sizeRow, sizeCol, 3);
+        sum<<<grid, thrd>>>(mem1, mem2, d_img, sizeRow, sizeCol, 3);
         cudaCheckDebug(cudaGetLastError());
     }
-    cudaError_t AttachToHost(img_t &img)
+    void AttachToHost(img_t &img)
     {
-        float *h_img_result = (float*)malloc(sizeImg);
-        cudaMemcpy(img_data, d_img, sizeImg, cudaMemcpyDeviceToHost);
-        img.insert(img.end(), h_img_result, h_img_result + sizeRow*sizeCol);
-        return cudaGetLastError();
+        img.resize(sizeImg/sizeof (float));
+        cudaCheckDebug(cudaMemcpy(img.data(), d_img, sizeImg, cudaMemcpyDeviceToHost));
     }
 
 private:
