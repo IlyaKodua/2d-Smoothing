@@ -99,12 +99,14 @@ public:
         dim3 grid(block_x,block_y);
         dim3 thrd(16,16);
 
-        std::vector<float> vec;
         calc2mem<<<grid, thrd>>>(mem1, mem2, d_img, sizeRow, sizeCol, 1, 0);
         cudaCheckDebug(cudaGetLastError());
 
         sum<<<grid, thrd>>>(mem1, mem2, d_img, sizeRow, sizeCol, 0);
         cudaCheckDebug(cudaGetLastError());
+
+        cudaCheckDebug(cudaMemset(mem1, 0, sizeMem));
+        cudaCheckDebug(cudaMemset(mem2, 0, sizeMem));
 
         calc2mem<<<grid, thrd>>>(mem1, mem2, d_img, sizeRow, sizeCol, sizeRow+2, 3);
         cudaCheckDebug(cudaGetLastError());

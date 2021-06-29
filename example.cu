@@ -5,8 +5,8 @@ int main() {
 
 
 
-    const int size_row = 2;
-    const int size_col = 2;
+    const int size_row = 4;
+    const int size_col = 4;
 
     std::vector<float> img((size_row) * (size_col));
 
